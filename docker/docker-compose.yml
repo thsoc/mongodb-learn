@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      # 这是“挂载动作”
+      # 1.挂载数据目录（二选一）
+      # - ./data/db:/data/db
+      # 2. 或者用 named volume: - mongodb_data:/data/db
+      - mongodb_data:/data/db
+
+      # 挂载配置文件
+      - ./mongo-config/mongod.conf:/etc/mongod.conf:ro #只读
+      # - ./mongo-logs:/var/log/mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    # 指定使用配置文件启动（这个可能会破坏官网的初始化无法注册admin）
+    #command: mongod --config /etc/mongod.conf
+
+volumes:
+  mongodb_data: # 这是“声明动作”
